@@ -31,9 +31,6 @@
     <Compile Include="POUs\InputConveyor\FB_InputConvVFD.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\InputConveyor\FB_HMIStates.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="POUs\InputConveyor\FB_InputConvProperties.TcPOU">
       <SubType>Code</SubType>
     </Compile>

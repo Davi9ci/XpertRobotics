@@ -28,7 +28,6 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	DriveStop		:BOOL;
 	DriveRun		:BOOL;
     DriveRunFWR		:BOOL;
     DriveRunREV		:BOOL;
@@ -37,7 +36,7 @@ VAR
     rDecRate		:REAL;
 	rDirSign 		:REAL;
 	fbSRAMP :SRAMP;
-	HzMax :REAL := 50;	
+	HzMax :REAL := 50;
 	rRPMvel :REAL;
 	rLinearVel :REAL;
 	sStatus		:STRING(120);	// STATUS text
@@ -104,10 +103,10 @@ fbSRAMP(
     V           => rDriveACCProfile // Acctual Acc
 );
 
-rRPMvel:= rDriveVelProfile/HzMax * iMotorMaxSpeed;
+rRPMvel := rDriveVelProfile/HzMax * iMotorMaxSpeed;
 rLinearVel := rDriveVelProfile/HzMax * ConveyorVelocityMax;
 
-//Status 
+//Status
 bSpeedReached := (rDriveVelProfile = DriveHzRef AND DriveRun );
 bRunning      := (DriveHzRef > 0 AND DriveRun);
 

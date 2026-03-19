@@ -19,8 +19,7 @@ VAR
 	InputConvPropeties		:FB_InputConvProperties;
 	InputConvVFD			:FB_InputConvVFD;
 	InputConvBufferManger	:FB_InputConvBufferManagement;
-	HMIStates				:FB_HMIStates;
-	
+
 	iMotorMaxSpeed			:INT;
 	iConveyorVelocitycmd	:REAL;
 	rAccTime				:REAL;
@@ -39,16 +38,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[
-// HMIStates(
-// 	bEnable:= bEnable , 
-// 	bRun:= bRun , 
-// 	rConvLength:= rConvLength ,
-// 	rBoxLen:= rBoxLen , 
-// 	rMinGap:= rMinGap , 
-// 	ActualConveyorVel:= InputConvVFD.rDriveVelProfile,
-// 	rCyclePLC		:= rCyclePLC,
-// 	bReadytoRecieve := bInFeedtoConv);
-// 	
+
 InputConvBufferManger(
 	bEnable:= bEnable , 
 	bInSensor:= GVL_VFD.bInputConveyorINSensor, 

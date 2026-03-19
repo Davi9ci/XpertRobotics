@@ -19,7 +19,6 @@ VAR
 	OutputConvBufferManger	:FB_OutputConvBufferManagement;
 //	HMIStates				:FB_HMIStates;
 	
-	bRun 					:BOOL; // only for HMI
 	iMotorMaxSpeed			:INT;
 	iConveyorVelocitycmd	:REAL;
 	rAccTime				:REAL;

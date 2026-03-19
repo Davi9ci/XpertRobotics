@@ -20,9 +20,6 @@ VAR_OUTPUT
 END_VAR
 VAR
 	rPx2MeterConv :REAL :=0;
-	rPx2MeterBox :REAL;
-	rPx2MeterGap :REAL;
-	rPitch_px :real; 
 	cPxLength :REAL :=700;
 END_VAR
 ]]></Declaration>
@@ -43,13 +40,7 @@ IF bReadytoRecieve THEN
 
 	ELSE
 		rPx2MeterConv := 0.0;
-		rPx2MeterBox := 0.0;
 	END_IF;
-	
-//	rPx2MeterBox := rPx2MeterConv*rBoxLen;
-//	rPx2MeterGap := rPx2MeterConv*rMinGap;
-//	rPitch_px := (rPx2MeterBox + rPx2MeterGap);
-	
 	
 	IF rMeter2Px <= cPxLength THEN 
 		rMeter2Px := rMeter2Px + (rPx2MeterConv * ActualConveyorVel * rCyclePLC);

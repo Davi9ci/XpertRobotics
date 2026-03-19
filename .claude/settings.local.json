@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__twincat-validator__validate_batch",
+      "Bash(node:*)"
+    ]
+  }
+}
