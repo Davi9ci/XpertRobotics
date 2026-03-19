@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <DUT Name="ST_InputConvData" Id="{379253df-0555-410e-8cde-272d7d813f36}">
+    <Declaration><![CDATA[TYPE ST_InputConvData :
+STRUCT
+	id :INT;
+	timeStampin :STRING;
+	timeStamparrived:STRING;
+	timeStampout:STRING;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

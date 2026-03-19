@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="MAIN" Id="{f910a8bf-e98b-47fb-807f-8f341c5bf839}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+    InputConveyor	:FB_InputConvMAIN;
+	RobotInterface	:FB_RobotInterefaceMAIN;
+	OutputConveyor	:FB_OutputConvMAIN;
+	
+    bEnable		:BOOL; //PLC Logic Enable
+	bInFeedtoConv :BOOL:= TRUE;
+	rCyclePLC	:REAL:= 0.001;
+	bSimulation :BOOL;
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[InputConveyor(
+	bEnable:= bEnable , 
+	bInFeedtoConv:= bInFeedtoConv , 
+	bRobotReadytoPick:= RobotInterface.bRobotReadyPickInputConv , 
+	rCyclePLC:= rCyclePLC, 
+	bSimulation:= bSimulation, 
+	AllowInFeedtoInputConv=> , 
+	AllowOutFeedtoRobot=> );
+
+//RobotInterface
+RobotInterface(
+	bEnable := bEnable,
+	bInputConvReady:= InputConveyor.AllowOutFeedtoRobot ,
+	bOutputConvReady:= outputconveyor.AllowRobotPlace ,
+	bRobotReadyPickInputConv=> ,
+	bRobotReadyPlaceOutputConv=> );
+
+//InputConveyor(
+OutputConveyor(
+	bEnable:= bEnable , 
+	bRobotReadytoPlace:= RobotInterface.bRobotReadyPlaceOutputConv , 
+	rCyclePLC:= rCyclePLC , 
+	bSimulation:= bSimulation, 
+	AllowRobotPlace=>);
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

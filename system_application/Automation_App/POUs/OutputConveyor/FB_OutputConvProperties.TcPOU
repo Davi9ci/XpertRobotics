@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_OutputConvProperties" Id="{491d5348-2cf1-482f-99e3-17120d2baa39}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_OutputConvProperties
+VAR_INPUT 
+	bEnable				:BOOL;
+	GearboxReduction 	:INT;
+	PullyDiameter		:REAL; //m
+	ConveyorVelocitycmd	:REAL; //m/s
+	MotorMaxSpeed		:INT; //RPM at 50 Hz (ASSUMPTION)
+	
+END_VAR
+
+VAR_OUTPUT
+	ConveyorVelocityMax	:REAL; // [m/s] at MotorMaxSpeed
+    MotorRPM			:REAL; // [rpm]
+    MotorHz             :REAL; // [Hz] 0..50
+    AnalogOut_V         :REAL; // [V] 0..10
+    AnalogOut_Raw		AT%Q*: INT;   // 0..32767
+END_VAR
+
+VAR
+	HzMax 		:REAL := 50;
+    HzCmd		:REAL;
+    Vin			:REAL;
+    RawAnalog	:REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF PullyDiameter = 0.0 OR MotorMaxSpeed = 0 OR GearboxReduction = 0 THEN
+	ConveyorVelocityMax := 0;
+ELSE
+	ConveyorVelocityMax := (PullyDiameter*PI*(MotorMaxSpeed/GearboxReduction))/60; // m/s
+END_IF
+
+IF (PullyDiameter > 0.0) AND (GearboxReduction > 0.0) THEN
+    MotorRPM := (ConveyorVelocitycmd * 60.0 * GearboxReduction) / (LREAL_TO_REAL (PI) * PullyDiameter);	// RPM
+ELSE
+    MotorRPM := 0.0;	// invalid mechanics
+END_IF;
+
+// RPM -> Hz (0..50)
+IF (MotorMaxSpeed <= 0.0) THEN
+	HzCmd := 0.0;
+ELSE
+	HzCmd := (MotorRPM / MotorMaxSpeed) * HzMax;
+END_IF
+
+// Clamp Hz to 0..50
+IF HzCmd < 0.0 THEN
+	HzCmd := 0.0;
+ELSIF HzCmd > HzMax THEN
+	HzCmd := HzMax;
+END_IF
+MotorHz := HzCmd;
+
+// Hz -> 0..10V (linear)
+Vin := (HzCmd / HzMax) * 10.0;
+
+// Clamp V to 0..10
+IF Vin < 0.0 THEN
+	Vin := 0.0;
+ELSIF Vin > 10.0 THEN
+	Vin := 10.0;
+END_IF
+AnalogOut_V := Vin;
+
+// 0..10V -> 0..32767 counts
+RawAnalog := (Vin / 10.0) * 32767.0;
+
+// Clamp counts
+IF RawAnalog < 0.0 THEN
+	RawAnalog := 0.0;
+ELSIF RawAnalog > 32767.0 THEN
+	RawAnalog := 32767.0;
+END_IF
+
+AnalogOut_Raw := REAL_TO_INT(LREAL_TO_REAL(RawAnalog));
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

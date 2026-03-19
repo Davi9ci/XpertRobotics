@@ -1,0 +1,41 @@
+<div id="OutputConveyorConfiguration_1" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="0" data-tchmi-left="-4" data-tchmi-width="1600" data-tchmi-height="100" data-tchmi-width-unit="px" data-tchmi-height-unit="%" data-tchmi-height-mode="Content" data-tchmi-width-mode="Value">
+
+<div id="TcHmiAccordionNavigation_2" data-tchmi-type="TcHmi.Controls.BaseTemplate.TcHmiAccordionNavigation" data-tchmi-height="142" data-tchmi-height-unit="px" data-tchmi-left="19" data-tchmi-left-unit="px" data-tchmi-top="51" data-tchmi-top-unit="px" data-tchmi-width="183" data-tchmi-width-unit="px" data-tchmi-close-when-clicked="False" data-tchmi-show-back-button="False" data-tchmi-breakpoint="150" data-tchmi-text-font-size="16" data-tchmi-is-enabled="True" data-tchmi-auto-collapse="False" data-tchmi-target-region="%ctrl%TcHmiRegion_2%/ctrl%">
+<script data-tchmi-target-attribute="data-tchmi-navigation-items" type="application/json">
+[
+  {
+    "content": "Pages/Configuration/OutputConveyorConfiguration/OutputConveyorConfiguration.content",
+    "id": "1 output",
+    "name": "1. Parameters"
+  },
+  {
+    "content": "Pages/Configuration/OutputConveyorConfiguration/OutputConveyorTest.content",
+    "id": "2 output",
+    "name": "2. Test Motion"
+  }
+]
+</script>
+
+
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-border-color" type="application/json">
+{
+  "color": "None"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "None"
+}
+</script>
+</div>
+<div id="TcHmiRegion_2" data-tchmi-type="TcHmi.Controls.System.TcHmiRegion" data-tchmi-height="519" data-tchmi-height-unit="px" data-tchmi-left="202" data-tchmi-left-unit="px" data-tchmi-top="51" data-tchmi-top-unit="px" data-tchmi-width="1373" data-tchmi-width-unit="px">
+</div>
+<div id="InputConvMechText_14" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="212" data-tchmi-left-unit="px" data-tchmi-text="Output Conveyor Configuration" data-tchmi-top="1" data-tchmi-top-unit="px" data-tchmi-width="420" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="30" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="8">
+</div>
+</div>

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_InputConvMAIN" Id="{04a0d896-efdf-4405-bbf3-4ce58a822561}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InputConvMAIN
+VAR_INPUT
+	bEnable			:BOOL; //PLC Logic Enable
+	bInFeedtoConv 	:BOOL; //Outside signal from infeed system to conveyor - ready to recieve
+	bRobotReadytoPick 	:BOOL; //Outside signal from robot - ready to recieve
+	rCyclePLC			:REAL;
+	bSimulation :BOOL;
+	
+END_VAR
+VAR_OUTPUT
+	AllowInFeedtoInputConv :BOOL; //Allow infeed of new boxes signal
+	AllowOutFeedtoRobot :BOOL; //Ready to be picked up by robot signal
+END_VAR
+VAR
+	//Function Blocks
+	InputConvPropeties		:FB_InputConvProperties;
+	InputConvVFD			:FB_InputConvVFD;
+	InputConvBufferManger	:FB_InputConvBufferManagement;
+	HMIStates				:FB_HMIStates;
+	
+	iMotorMaxSpeed			:INT;
+	iConveyorVelocitycmd	:REAL;
+	rAccTime				:REAL;
+	rDecTime				:REAL;
+	
+	//Belt linear vel tranformation
+	iGearboxReduction	:INT := 1;
+	rPullyDiameter		:REAL;
+	
+	//Conveyor propeties 
+	rConvLength :REAL; //Conveyor Length in m (Distance between sensors)
+	rBoxLen	:REAL; //Box size length in m
+	rMinGap	:REAL; //Allowable min gap between boxes in m
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+// HMIStates(
+// 	bEnable:= bEnable , 
+// 	bRun:= bRun , 
+// 	rConvLength:= rConvLength ,
+// 	rBoxLen:= rBoxLen , 
+// 	rMinGap:= rMinGap , 
+// 	ActualConveyorVel:= InputConvVFD.rDriveVelProfile,
+// 	rCyclePLC		:= rCyclePLC,
+// 	bReadytoRecieve := bInFeedtoConv);
+// 	
+InputConvBufferManger(
+	bEnable:= bEnable , 
+	bInSensor:= GVL_VFD.bInputConveyorINSensor, 
+	bOutSensor:= GVL_VFD.bInputConveyorOUTSensor ,
+	bReadytoRecieve:= bInFeedtoConv, 
+	rConvLength:= rConvLength , 
+	rBoxLen:= rBoxLen , 
+	rMinGap:= rMinGap , 
+	bRobotReady:= bRobotReadytoPick);
+
+AllowInFeedtoInputConv := InputConvBufferManger.bAllowIn;
+AllowOutFeedtoRobot := InputConvBufferManger.bAllowOut;
+	
+InputConvPropeties(
+	GearboxReduction:= iGearboxReduction , 
+	PullyDiameter:= rPullyDiameter , 
+	ConveyorVelocitycmd:= iConveyorVelocitycmd  , 
+	MotorMaxSpeed:= iMotorMaxSpeed,
+	bBufferFull:= InputConvBufferManger.bFull);
+
+IF bSimulation THEN 
+
+	InputConvVFD(
+		bStop:= GVL_VFD.bInConvStop, 
+		bRunFWR:= GVL_VFD.bInConvRunFWD, 
+		bRunREV:= GVL_VFD.bInConvRunREV , 
+		bJog:= GVL_VFD.bInConvJog , 
+		iVoltage:= InputConvPropeties.AnalogOut_V,
+		iVoltageMax:= 10,
+		rAccTime:= rAccTime , 
+		rDecTime:= rDecTime,
+		iMotorMaxSpeed:= iMotorMaxSpeed,
+		ConveyorVelocityMax:= InputConvPropeties.ConveyorVelocityMax);
+		
+END_IF
+
+GVL_VFD.bInputVFDSpeedReached	:= InputConvVFD.bSpeedReached;
+GVL_VFD.bInputVFDRunning		:= InputConvVFD.bRunning;
+//GVL_VFD.bInConvFault	:= ;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

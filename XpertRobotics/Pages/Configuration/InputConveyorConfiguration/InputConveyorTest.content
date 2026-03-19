@@ -1,0 +1,547 @@
+<div id="InputConveyorTest" data-tchmi-type="TcHmi.Controls.System.TcHmiContent" data-tchmi-top="2" data-tchmi-left="1" data-tchmi-width-mode="Content" data-tchmi-height-mode="Content" data-tchmi-zindex="2">
+  
+  
+      
+<div id="JogButton" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiButton" data-tchmi-height="80" data-tchmi-height-unit="px" data-tchmi-left="156" data-tchmi-left-unit="px" data-tchmi-top="401" data-tchmi-top-unit="px" data-tchmi-width="150" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-zindex="26" data-tchmi-text-font-size="16" data-tchmi-text-font-weight="Bold" data-tchmi-ignore-escape-sequences="false" data-tchmi-text="JOG" data-tchmi-creator-visibility="Visible">
+<script data-tchmi-target-attribute="data-tchmi-border-width" type="application/json">
+{
+  "left": 2,
+  "right": 1,
+  "top": 1,
+  "bottom": 1,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-border-radius" type="application/json">
+{
+  "topLeft": 20.0,
+  "topRight": 20.0,
+  "bottomLeft": 20.0,
+  "bottomRight": 20.0,
+  "topLeftUnit": "px",
+  "topRightUnit": "px",
+  "bottomLeftUnit": "px",
+  "bottomRightUnit": "px"
+}
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "angle": 0.0,
+  "stopPoints": [
+    {
+      "color": "rgba(37, 78, 166, 1)",
+      "stop": "0%"
+    },
+    {
+      "color": "rgba(19, 56, 91, 1)",
+      "stop": "33.43%"
+    },
+    {
+      "color": "rgba(255, 255, 255, 0)",
+      "stop": "69.92%"
+    },
+    {
+      "color": "rgba(255, 255, 255, 0)",
+      "stop": "100%"
+    }
+  ]
+}
+</script>
+
+<script data-tchmi-target-attribute="data-tchmi-trigger" type="application/json">
+[
+  {
+    "event": "%ctx%owner::Id|EventRegistrationMode=Resolve%/ctx%.onMouseDown",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%ADS.PLC1.GVL_VFD.bInConvJog%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": true
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.iConveyorVelocitycmd%/s%",
+        "value": {
+          "objectType": "Symbol",
+          "valueType": "tchmi:general#/definitions/REAL",
+          "symbolExpression": "%ctrl%TestMotionGauge::Value%/ctrl%"
+        },
+        "asyncWait": true
+      }
+    ]
+  },
+  {
+    "event": "%ctx%owner::Id|EventRegistrationMode=Resolve%/ctx%.onMouseUp",
+    "actions": [
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%ADS.PLC1.GVL_VFD.bInConvJog%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/BOOL",
+          "value": false
+        },
+        "asyncWait": true
+      },
+      {
+        "objectType": "WriteToSymbol",
+        "active": true,
+        "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.iConveyorVelocitycmd%/s%",
+        "value": {
+          "objectType": "StaticValue",
+          "valueType": "tchmi:general#/definitions/REAL",
+          "value": 0.0
+        },
+        "asyncWait": true
+      }
+    ]
+  },
+  {
+    "event": "%s%ADS.PLC1.MAIN.bEnable%/s%",
+    "actions": [
+      {
+        "objectType": "Condition",
+        "active": true,
+        "parts": [
+          {
+            "if": [
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.bEnable%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "value": false
+                },
+                "compareOperator": "==",
+                "logic": null
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/INT",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.iMotorMaxSpeed%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/INT",
+                  "value": 0
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.rPullyDiameter%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "value": 0.0
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.rAccTime%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "value": 0.0
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.rDecTime%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/REAL",
+                  "value": 0.0
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.bEnable%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/BOOL",
+                  "value": false
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              },
+              {
+                "compare1": {
+                  "objectType": "Symbol",
+                  "valueType": "tchmi:general#/definitions/INT",
+                  "symbolExpression": "%s%ADS.PLC1.MAIN.InputConveyor.InputConvBufferManger.iCapacity%/s%"
+                },
+                "compare2": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/INT",
+                  "value": 0
+                },
+                "compareOperator": "==",
+                "logic": "OR"
+              }
+            ],
+            "then": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctx%owner::IsEnabled%/ctx%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/Boolean",
+                  "value": false
+                },
+                "asyncWait": true
+              }
+            ]
+          },
+          {
+            "else": [
+              {
+                "objectType": "WriteToSymbol",
+                "active": true,
+                "symbolExpression": "%ctx%owner::IsEnabled%/ctx%",
+                "value": {
+                  "objectType": "StaticValue",
+                  "valueType": "tchmi:general#/definitions/Boolean",
+                  "value": true
+                },
+                "asyncWait": true
+              }
+            ]
+          }
+        ],
+        "asyncWait": true
+      }
+    ]
+  }
+]
+</script>
+</div>
+<div id="TestMotionGauge" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiLinearGauge" data-tchmi-base-animation-time="100" data-tchmi-height="82" data-tchmi-height-unit="px" data-tchmi-left="11" data-tchmi-left-unit="px" data-tchmi-show-labels="false" data-tchmi-show-ticks="true" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="true" data-tchmi-top="318" data-tchmi-top-unit="px" data-tchmi-width="444" data-tchmi-width-unit="px" data-tchmi-step="0.01" data-tchmi-editable="true" data-tchmi-ignore-invalid-values="false" data-tchmi-value-space-unit="px" data-tchmi-click-anywhere-to-edit="true" data-tchmi-value-font-size="16" data-tchmi-label-position="Top" data-tchmi-label-font-size="10" data-tchmi-unit="velocity (m/s)" data-tchmi-unit-orientation="Horizontal" data-tchmi-zindex="27" data-tchmi-unit-font-size="14" data-tchmi-is-enabled="true" data-tchmi-orientation="Horizontal" data-tchmi-label-font-weight="Bold" data-tchmi-max-value="%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%" data-tchmi-value="0">
+<script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
+[
+  {
+    "color": {
+      "color": "rgba(0, 128, 0, 1)"
+    },
+    "start": 0.0,
+    "end": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.75%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 165, 0, 1)"
+    },
+    "start": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.75%/f%",
+    "end": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.95%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 0, 0, 1)"
+    },
+    "start": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.95%/f%",
+    "end": "%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%"
+  }
+]
+</script>
+<script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
+{
+  "objectType": "Function",
+  "active": true,
+  "fn": "TcHmi.Functions.Beckhoff.GaugeValueFormatter",
+  "fnParams": [
+    {
+      "objectType": "StaticValue",
+      "valueType": "tchmi:general#/definitions/Number",
+      "value": 2.0
+    }
+  ]
+}
+</script>
+<script data-tchmi-target-attribute="data-tchmi-tick-definition" type="application/json">
+{
+  "mainTickRange": 0.1,
+  "subTickRange": 0.05
+}
+</script>
+
+
+<script data-tchmi-target-attribute="data-tchmi-padding" type="application/json">
+{
+  "left": 0,
+  "right": 0,
+  "top": 5,
+  "bottom": 0,
+  "leftUnit": "px",
+  "rightUnit": "px",
+  "topUnit": "px",
+  "bottomUnit": "px"
+}
+</script>
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "None"
+}
+</script>
+</div>
+<div id="TcHmiRectangle_13" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRectangle" data-tchmi-height="489" data-tchmi-height-unit="px" data-tchmi-left="9" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="450" data-tchmi-width-unit="px" data-tchmi-zindex="1" data-tchmi-opacity="0.3">
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(27, 27, 31, 1)"
+}
+</script>
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(27, 27, 31, 1)"
+}
+</script>
+</div>
+<div id="GearboxInput_18" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="694" data-tchmi-left-unit="px" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="11" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvVFD.rDriveVelProfile%/s%.toFixed(2)%/f%" data-tchmi-is-enabled="false" data-tchmi-placeholder="0">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_71" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="807" data-tchmi-left-unit="px" data-tchmi-text="Hz" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="8">
+</div>
+<div id="GearboxInput_19" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="694" data-tchmi-left-unit="px" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="11" data-tchmi-text-horizontal-alignment="Center" data-tchmi-is-enabled="false" data-tchmi-placeholder="0" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvVFD.rDriveACCProfile%/s%.toFixed(2)%/f%">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_72" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="807" data-tchmi-left-unit="px" data-tchmi-text="Hz/s" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="8">
+</div>
+<div id="TcHmiTextblock_74" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="498" data-tchmi-left-unit="px" data-tchmi-text="Drive Frequency Output:" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="8">
+</div>
+<div id="TcHmiTextblock_75" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="498" data-tchmi-left-unit="px" data-tchmi-text="Drive Frequency Acc:" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="8">
+</div>
+<div id="GearboxInput_21" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1104" data-tchmi-left-unit="px" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="10" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvVFD.rRPMvel%/s%.toFixed(0)%/f%" data-tchmi-is-enabled="false" data-tchmi-placeholder="0">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_77" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1219" data-tchmi-left-unit="px" data-tchmi-text="RPM" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="GearboxInput_22" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1104" data-tchmi-left-unit="px" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="10" data-tchmi-text-horizontal-alignment="Center" data-tchmi-is-enabled="false" data-tchmi-placeholder="0" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.iConveyorVelocitycmd%/s%.toFixed(2)%/f%">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_78" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1219" data-tchmi-left-unit="px" data-tchmi-text="m/s" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="GearboxInput_23" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="694" data-tchmi-left-unit="px" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="10" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvVFD.iVoltage%/s%.toFixed(2)%/f%" data-tchmi-is-enabled="false" data-tchmi-placeholder="0">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_79" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="807" data-tchmi-left-unit="px" data-tchmi-text="V" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiTextblock_80" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="904" data-tchmi-left-unit="px" data-tchmi-text="Motor Speed:" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiTextblock_81" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="904" data-tchmi-left-unit="px" data-tchmi-text="Conveyor Velocity CMD:" data-tchmi-top="390" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiTextblock_82" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="498" data-tchmi-left-unit="px" data-tchmi-text="Voltage Input:" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiRectangle_14" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRectangle" data-tchmi-height="150" data-tchmi-height-unit="px" data-tchmi-left="487" data-tchmi-left-unit="px" data-tchmi-top="340" data-tchmi-top-unit="px" data-tchmi-width="817" data-tchmi-width-unit="px" data-tchmi-zindex="3" data-tchmi-opacity="0.3" data-tchmi-creator-visibility="Visible">
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(27, 27, 31, 1)"
+}
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(0, 0, 0, 1)"
+}
+</script>
+
+
+
+
+</div>
+<div id="TcHmiRectangle_24" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRectangle" data-tchmi-height="489" data-tchmi-height-unit="px" data-tchmi-left="8" data-tchmi-left-unit="px" data-tchmi-top="0" data-tchmi-top-unit="px" data-tchmi-width="1296" data-tchmi-width-unit="px" data-tchmi-zindex="0" data-tchmi-opacity="0.2">
+<script data-tchmi-target-attribute="data-tchmi-background-color" type="application/json">
+{
+  "color": "rgba(27, 27, 31, 1)"
+}
+</script>
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-stroke-color" type="application/json">
+{
+  "color": "rgba(0, 0, 0, 1)"
+}
+</script>
+
+
+
+
+</div>
+<div id="TcHmiRadialGauge_InputConv_8" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiRadialGauge" data-tchmi-base-animation-time="10" data-tchmi-gauge-alignment="Center" data-tchmi-height="296" data-tchmi-height-unit="px" data-tchmi-left="11" data-tchmi-left-unit="px" data-tchmi-show-labels="False" data-tchmi-show-ticks="True" data-tchmi-show-value-text="true" data-tchmi-start-from-zero="True" data-tchmi-top="12" data-tchmi-top-unit="px" data-tchmi-width="444" data-tchmi-width-unit="px" data-tchmi-label-position="Inside" data-tchmi-editable="False" data-tchmi-step="0.01" data-tchmi-zindex="19" data-tchmi-unit-font-size="12" data-tchmi-max-value="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%%/f%" data-tchmi-start-position="220" data-tchmi-sub-tick-position="Inside" data-tchmi-legend-font-size="5" data-tchmi-label-range="%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%" data-tchmi-ignore-invalid-values="False" data-tchmi-unit="[m/s]" data-tchmi-value="%s%ADS.PLC1.MAIN.InputConveyor.InputConvVFD.rLinearVel%/s%">
+<script data-tchmi-target-attribute="data-tchmi-range" type="application/json">
+[
+  {
+    "color": {
+      "color": "rgba(0, 128, 0, 1)"
+    },
+    "start": 0.0,
+    "end": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.75%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 165, 0, 1)"
+    },
+    "start": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.75%/f%",
+    "end": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.95%/f%"
+  },
+  {
+    "color": {
+      "color": "rgba(255, 0, 0, 1)"
+    },
+    "start": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%*0.95%/f%",
+    "end": "%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%%/f%"
+  }
+]
+</script>
+<script data-tchmi-target-attribute="data-tchmi-value-format" type="application/json">
+{
+  "objectType": "Function",
+  "fn": "GaugeValueFormatter",
+  "fnParams": []
+}
+</script>
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-tick-definition" type="application/json">
+{
+  "mainTickRange": 0.5,
+  "subTickRange": 0.1
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<div id="GearboxInput_32" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextbox" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1104" data-tchmi-left-unit="px" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="113" data-tchmi-width-unit="px" data-tchmi-auto-select-text="false" data-tchmi-auto-focus-out="false" data-tchmi-text-font-size="20" data-tchmi-zindex="10" data-tchmi-text-horizontal-alignment="Center" data-tchmi-is-enabled="false" data-tchmi-placeholder="0" data-tchmi-text="%f%%s%ADS.PLC1.MAIN.InputConveyor.InputConvPropeties.ConveyorVelocityMax%/s%.toFixed(2)%/f%">
+<script data-tchmi-target-attribute="data-tchmi-content-padding" type="application/json">
+{
+  "top": 3,
+  "right": 3,
+  "bottom": 3,
+  "left": 3
+}
+</script>
+
+</div>
+<div id="TcHmiTextblock_196" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="1219" data-tchmi-left-unit="px" data-tchmi-text="m/s" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="85" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Center" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiTextblock_197" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiTextblock" data-tchmi-height="50" data-tchmi-height-unit="px" data-tchmi-left="904" data-tchmi-left-unit="px" data-tchmi-text="Conveyor Max. Velocity:" data-tchmi-top="440" data-tchmi-top-unit="px" data-tchmi-width="188" data-tchmi-width-unit="px" data-tchmi-word-wrap="true" data-tchmi-text-font-size="20" data-tchmi-text-horizontal-alignment="Left" data-tchmi-text-vertical-alignment="Center" data-tchmi-zindex="7">
+</div>
+<div id="TcHmiScopeControl_3" data-tchmi-type="TcHmi.Controls.Beckhoff.TcHmiScopeControl.TcHmiScopeControl" data-tchmi-height="330" data-tchmi-height-unit="px" data-tchmi-left="487" data-tchmi-left-unit="px" data-tchmi-top="1" data-tchmi-top-unit="px" data-tchmi-width="817" data-tchmi-width-unit="px" data-tchmi-server-interval="100" data-tchmi-autostart-record="False" data-tchmi-enable-record-controls="True">
+
+
+
+
+
+
+
+<script data-tchmi-target-attribute="data-tchmi-scope-config" type="application/json">
+{
+  "name": "ScopeCongiguration",
+  "chart": "InputConvTest"
+}
+</script>
+</div>
+</div>

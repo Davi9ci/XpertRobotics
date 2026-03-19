@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <GVL Name="GVL_VFD" Id="{d72ccef2-c04f-40ed-8980-e301b20ec526}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	
+// INPUT Conveyor----------------------
+// Outputs from PLC to input conveyor VFD
+	bInConvStop			AT%Q*:BOOL;
+    bInConvRunFWD		AT%Q*:BOOL;
+	bInConvRunREV		AT%Q*:BOOL;
+	bInConvJog			AT%Q*:BOOL;
+
+// Inputs from input conveyor VFD to PLC
+	bInputVFDSpeedReached	AT%I*:BOOL;	
+	bInConvFault			AT%I*:BOOL;
+	bInputVFDRunning		AT%I*:BOOL;
+	
+// Inputs form Conveyor Sensors
+	bInputConveyorINSensor	AT%I*:BOOL;
+	bInputConveyorOUTSensor AT%I*:BOOL;
+
+// OUTPUT CONVEYOR-----------------------
+// Outputs from PLC to input conveyor VFD
+	bOutConvStop		AT%Q*:BOOL;
+    bOutConvRunFWD		AT%Q*:BOOL;
+	bOutConvRunREV		AT%Q*:BOOL;
+	bOutConvJog			AT%Q*:BOOL;
+
+// Inputs from input conveyor VFD to PLC
+	bOutputVFDSpeedReached	AT%I*:BOOL;	
+	bOutConvFault			AT%I*:BOOL;
+	bOutputVFDRunning		AT%I*:BOOL;
+	
+// Inputs form Conveyor Sensors
+	bOutputConveyorINSensor		AT%I*:BOOL;
+	bOutputConveyorOUTSensor	AT%I*:BOOL;
+END_VAR
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

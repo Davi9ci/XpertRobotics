@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_HMIStates" Id="{c4451d6f-be02-4c69-8d1d-a63eb9b4d247}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_HMIStates
+VAR_INPUT
+	bEnable :BOOL;
+	bRun	:BOOL;
+	bReadytoRecieve :BOOL;
+	rConvLength :REAL;
+	rBoxLen	:REAL;  
+	rMinGap	:REAL;
+	ActualConveyorVel :REAL;
+	rCyclePLC		:REAL; 
+END_VAR
+VAR_OUTPUT
+	ImageState :INT;
+	rMeter2Px :REAL;
+	bInSensor, bOutSensor	:BOOL;  
+	
+END_VAR
+VAR
+	rPx2MeterConv :REAL :=0;
+	rPx2MeterBox :REAL;
+	rPx2MeterGap :REAL;
+	rPitch_px :real; 
+	cPxLength :REAL :=700;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Main page image States
+IF bEnable AND bRun THEN
+    imageState := 3;
+ELSIF bEnable THEN
+    imageState := 2;
+ELSE
+    imageState := 1;
+END_IF;
+
+IF bReadytoRecieve THEN
+	//Conveyor box motion
+	IF rConvLength > 0.0 THEN
+		rPx2MeterConv := cPxLength/ rConvLength;
+
+	ELSE
+		rPx2MeterConv := 0.0;
+		rPx2MeterBox := 0.0;
+	END_IF;
+	
+//	rPx2MeterBox := rPx2MeterConv*rBoxLen;
+//	rPx2MeterGap := rPx2MeterConv*rMinGap;
+//	rPitch_px := (rPx2MeterBox + rPx2MeterGap);
+	
+	
+	IF rMeter2Px <= cPxLength THEN 
+		rMeter2Px := rMeter2Px + (rPx2MeterConv * ActualConveyorVel * rCyclePLC);
+	ELSE
+		rMeter2Px := 0;
+	END_IF
+	
+	//Conveyor Sensor logic
+	
+	IF (rMeter2Px >= 60) AND (rMeter2Px <= 150) THEN
+		bInSensor := TRUE;
+	ELSE
+		bInSensor := FALSE;
+	END_IF
+	
+	IF (rMeter2Px >= 610) AND (rMeter2Px <= 700) THEN
+		bOutSensor := TRUE;
+	ELSE
+		bOutSensor := FALSE;
+	END_IF
+END_IF
+
+//IF bReadytoRecieve THEN
+//    FOR i := 1 TO 20 DO
+//        IF arActive[i] THEN
+
+//            // Move
+//            IF arMeter2Px[i] <= cPxLength THEN
+//                arMeter2Px[i] := arMeter2Px[i] + (rPx2Meter * ActualConveyorVel * rCyclePLC);
+//            ELSE
+//                // either wrap around...
+//                arMeter2Px[i] := 0.0;
+
+//                // ...or deactivate when leaving:
+//                // arActive[i] := FALSE;
+//                // arMeter2Px[i] := 0.0;
+//            END_IF
+
+//            // Sensors per box
+//            arInSensor[i] := (arMeter2Px[i] >= 60.0) AND (arMeter2Px[i] <= 150.0);
+//            arOutSensor[i] := (arMeter2Px[i] >= 610.0) AND (arMeter2Px[i] <= 700.0);
+
+//            // Any-box summary
+//            bInSensorAny := bInSensorAny OR arInSensor[i];
+//            bOutSensorAny := bOutSensorAny OR arOutSensor[i];
+
+//        END_IF
+//    END_FOR
+//END_IF;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

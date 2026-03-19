@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_OutputConvBufferManagement" Id="{46b22052-28ec-40a3-92c3-16e83f57914d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_OutputConvBufferManagement
+VAR_INPUT
+    bEnable					: BOOL;
+    bInSensor				: BOOL; // Entry sensor at robot drop zone
+    bOutSensor				: BOOL; // Exit sensor at discharge
+    bRobotReadytoPlace		: BOOL; // robot permission from robot
+	
+END_VAR
+
+VAR CONSTANT
+    iMax_Boxes_buffer : INT := 500;
+END_VAR
+
+VAR_OUTPUT
+    bEmpty      : BOOL;
+    bAllowDrop  : BOOL;     // allow robot to place a new box (entry sensor must be OFF)
+END_VAR
+
+VAR
+    bEnableBuffer :BOOL;
+	rtIn     : R_TRIG;
+    ftOutOff : F_TRIG;
+    
+	bReset	: BOOL := FALSE;
+	rtReset	: R_TRIG;
+	
+    // Time
+    fbTime : FB_LocalSystemTime := (bEnable := TRUE, dwCycle := 1);
+    sNow   : STRING;
+
+    // FIFO
+    Outputlog    : ARRAY[1..iMax_Boxes_buffer] OF ST_OutputConvData;
+    iHead   : INT := 1;
+    iTail   : INT := 1;
+    iQCount : INT := 0;
+
+    // ID generator
+    iIdCounter : INT := 0;
+
+    i : INT;
+    sStatus : STRING(120);
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Time
+fbTime();
+IF fbTime.bValid THEN
+    sNow := SYSTEMTIME_TO_STRING(fbTime.systemTime);
+ELSE
+    sNow := '';
+END_IF
+
+// Edge detection
+rtIn(CLK := bInSensor);
+ftOutOff(CLK := bOutSensor);
+rtReset(CLK := bReset);
+
+// Reset
+IF rtReset.Q THEN
+    iHead := 1;
+    iTail := 1;
+    iQCount := 0;
+
+    FOR i := 1 TO iMax_Boxes_buffer DO
+        Outputlog[i].id := 0;
+        Outputlog[i].timeStampIn := '';
+        Outputlog[i].timeStampOut := '';
+    END_FOR
+END_IF
+
+
+IF bEnable AND bEnableBuffer AND fbTime.bValid THEN
+
+    // 1) Entry rising edge -> PUSH
+    // (robot placed a box; entry sensor went ON)
+    IF rtIn.Q THEN
+        // Basic protection: don't exceed storage
+        IF iQCount < iMax_Boxes_buffer THEN
+
+            IF iIdCounter >= 32767 THEN 
+				iIdCounter := 0; 
+			END_IF
+            iIdCounter := iIdCounter + 1;
+
+            Outputlog[iTail].id := iIdCounter;
+            Outputlog[iTail].timeStampIn := sNow;
+            Outputlog[iTail].timeStampOut := '';
+
+            iTail := iTail + 1;
+            IF iTail > iMax_Boxes_buffer THEN
+				iTail := 1; 
+			END_IF
+
+            iQCount := iQCount + 1;
+
+        END_IF
+    END_IF
+
+
+    // 2) Exit falling edge -> POP
+    // (box left conveyor; exit sensor went OFF)
+    IF ftOutOff.Q THEN
+        IF iQCount > 0 THEN
+            Outputlog[iHead].timeStampOut := sNow;
+
+            iHead := iHead + 1;
+            IF iHead > iMax_Boxes_buffer THEN
+ 				iHead := 1; 
+			END_IF
+
+            iQCount := iQCount - 1;
+
+        END_IF
+    END_IF
+END_IF
+
+// States
+bEmpty := (iQCount <= 0);
+
+// AllowDrop condition: ONLY if entry sensor is NOT ON (free zone)
+// plus permissives if you keep them
+bAllowDrop := bEnable AND bRobotReadytoPlace AND (NOT bInSensor);
+
+
+// Status (optional)
+IF NOT bEnable THEN
+    sStatus := 'Output buffer disabled';
+ELSIF bAllowDrop THEN
+    sStatus := 'Running: drop allowed (entry sensor clear)';
+ELSE
+    IF bInSensor THEN
+        sStatus := 'Drop blocked: entry sensor occupied';
+    ELSIF NOT bRobotReadytoPlace THEN
+        sStatus := 'Drop blocked: Robot is not ready to place';
+    ELSE
+        sStatus := 'Drop blocked';
+    END_IF
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

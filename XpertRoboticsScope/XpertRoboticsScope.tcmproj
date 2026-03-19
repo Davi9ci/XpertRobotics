@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{16554b9f-87a4-4b49-9c72-fa7bf55182c8}</ProjectGuid>
+    <AssemblyName>XpertRoboticsScope</AssemblyName>
+    <Name>XpertRoboticsScope</Name>
+    <RootNamespace>XpertRoboticsScope</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="YT Scope Project.tcscopex">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+</Project>

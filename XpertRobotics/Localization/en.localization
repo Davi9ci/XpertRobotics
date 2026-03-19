@@ -1,0 +1,27 @@
+{
+  "$schema": "../../Packages/Beckhoff.TwinCAT.HMI.Framework.14.3.360/runtimes/native1.12-tchmi/Schema/LocalizationDescription.Schema.json",
+  "locale": "en",
+  "localizedText": {
+    "L_InputConveyorOverveiw": "Input Conveyor Overveiw",
+    "L_OutputConveyorOverveiw": "Output Conveyor Overveiw",
+    "L_Robot": "Robot",
+    "L_Overview": "Overview",
+    "L_InputConveyorTest": "Input Conveyor Test",
+    "L_InputConveyorConfiguration": "Input Conveyor Configuration",
+    "L_OutputConveyorTest": "Output Conveyor Test",
+    "L_OutputConveyorConfiguration": "Output Conveyor Configuration",
+    "L_RobotConfiguration": "Robot Configuration",
+    "L_Localization": "Localization",
+    "L_Theme": "Theme",
+    "L_Configuration": "Configuration",
+    "L_InputConveyorApplication": "Input Conveyor Application",
+    "L_OutputConveyorApplication": "Output Conveyor Application",
+    "L_RobotApplication": "Robot Application",
+    "L_Application": "Application",
+    "L_InputConveyorScope": "Input Conveyor Scope",
+    "L_OutputConveyorScope": "Output Conveyor Scope",
+    "L_RobotScope": "Robot Scope",
+    "L_Scope": "Scope",
+    "L_Events": "Events"
+  }
+}

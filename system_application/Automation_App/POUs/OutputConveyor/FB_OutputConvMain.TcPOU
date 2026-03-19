@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_OutputConvMain" Id="{3cf8dac8-dfb7-4121-af82-776a98d3d53b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_OutputConvMAIN
+VAR_INPUT
+	bEnable				:BOOL; //PLC Logic Enable
+	bRobotReadytoPlace 	:BOOL;
+	rCyclePLC			:REAL;
+	bSimulation			:BOOL;
+	
+END_VAR
+VAR_OUTPUT
+	AllowRobotPlace :BOOL; //Ready to be picked up by robot signal
+END_VAR
+VAR
+	//Function Blocks
+	OutputConvPropeties		:FB_OutputConvProperties;
+	OutputConvVFD			:FB_OutputConvVFD;
+	OutputConvBufferManger	:FB_OutputConvBufferManagement;
+//	HMIStates				:FB_HMIStates;
+	
+	bRun 					:BOOL; // only for HMI
+	iMotorMaxSpeed			:INT;
+	iConveyorVelocitycmd	:REAL;
+	rAccTime				:REAL;
+	rDecTime				:REAL;
+	
+	//Belt linear vel tranformation
+	iGearboxReduction	:INT := 1;
+	rPullyDiameter		:REAL;
+	
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[OutputConvBufferManger(
+	bEnable:= bEnable, 
+	bInSensor:= GVL_VFD.bOutputConveyorINSensor, 
+	bOutSensor:= GVL_VFD.bOutputConveyorOUTSensor, 
+	bRobotReadytoPlace:= bRobotReadytoPlace,  
+	bEmpty=> , 
+	bAllowDrop=> );
+	
+AllowRobotPlace := OutputConvBufferManger.bAllowDrop;
+
+OutputConvPropeties(
+	bEnable:= bEnable , 
+	GearboxReduction:= iGearboxReduction , 
+	PullyDiameter:= rPullyDiameter, 
+	ConveyorVelocitycmd:= iConveyorVelocitycmd, 
+	MotorMaxSpeed:= iMotorMaxSpeed );
+	
+IF bSimulation THEN 
+
+	OutputConvVFD(
+		bStop:= GVL_VFD.bOutConvStop, 
+		bRunFWR:= GVL_VFD.bOutConvRunFWD, 
+		bRunREV:= GVL_VFD.bOutConvRunREV , 
+		bJog:= GVL_VFD.bOutConvJog , 
+		iVoltage:= OutputConvPropeties.AnalogOut_V,
+		iVoltageMax:= 10,
+		rAccTime:= rAccTime , 
+		rDecTime:= rDecTime,
+		iMotorMaxSpeed:= iMotorMaxSpeed,
+		ConveyorVelocityMax:= OutputConvPropeties.ConveyorVelocityMax);
+END_IF
+GVL_VFD.bOutputVFDSpeedReached	:= OutputConvVFD.bSpeedReached;
+GVL_VFD.bOutputVFDRunning	:= OutputConvVFD.bRunning;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_OutputConvVFD" Id="{4e3fe5f9-d1ea-4618-8adc-b27d5b02ad57}" SpecialFunc="None">
+    <Declaration><![CDATA[//Generate commands to a drive.
+FUNCTION_BLOCK FB_OutputConvVFD
+
+VAR_INPUT
+	bStop				:BOOL;
+    bRunFWR				:BOOL;
+	bRunREV				:BOOL;
+	bJog		:BOOL;
+	iVoltage		:REAL; 
+	iVoltageMax		:REAL; 
+    rAccTime		:REAL;      // Acc in seconds
+    rDecTime		:REAL;      // DEC in seconds
+	iMotorMaxSpeed :REAL;
+	ConveyorVelocityMax :REAL;
+END_VAR
+
+VAR_OUTPUT
+	bSpeedReached	:BOOL;	
+	bFault			:BOOL;
+	bRunning		:BOOL;
+	rDriveVelProfile	:REAL;   // Simulated Motor vel profile
+	rDriveACCProfile	:REAL; // Simulated Motor acc profile 
+	
+END_VAR
+
+VAR
+	DriveStop		:BOOL;
+	DriveRun		:BOOL;
+    DriveRunFWR		:BOOL;
+    DriveRunREV		:BOOL;
+    DriveHzRef		:REAL;
+	rAccRate		:REAL;
+    rDecRate		:REAL;
+	rDirSign 		:REAL;
+	fbSRAMP :SRAMP;
+	HzMax :REAL := 50;	
+	rRPMvel :REAL;
+	rLinearVel :REAL;
+	sStatus		:STRING(120);	// STATUS text
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Run command
+DriveRunFWR := bRunFWR OR bJog;
+DriveRunREV := bRunREV;
+
+DriveRun := (DriveRunFWR XOR DriveRunREV);   // TRUE only if one is on
+
+IF bRunFWR OR bJog THEN
+    rDirSign := 1.0;
+ELSIF bRunREV THEN
+    rDirSign := -1.0;
+
+END_IF;
+
+//Voltage to Hz:
+IF iVoltage <= 0.0  THEN //OR NOT DriveRun
+    DriveHzRef := 0.0;
+ELSIF iVoltage > iVoltageMax THEN
+    DriveHzRef := HzMax;
+ELSE
+    DriveHzRef := (iVoltage / iVoltageMax) * HzMax;
+END_IF;
+
+
+IF ABS(DriveHzRef) < 0.001 AND rAccTime > 0 THEN
+    rAccRate := (HzMax / 2) / rAccTime;
+ELSIF rAccTime > 0.01 THEN
+    rAccRate := DriveHzRef / rAccTime;
+ELSE
+    rAccRate := DriveHzRef * 10.0;
+END_IF;
+
+IF ABS(DriveHzRef) < 0.001 AND rDecTime > 0 THEN
+    rDecRate := (HzMax / 2) / -rDecTime;
+ELSIF rDecTime > 0.01 THEN
+	rDecRate := DriveHzRef / -rDecTime;   // Hz/s
+ELSE
+	rDecRate := DriveHzRef * -10.0;      // Hz/s
+END_IF;
+
+// Determine target input
+IF DriveRun THEN 
+	DriveHzRef := DriveHzRef * rDirSign;
+ELSE
+	DriveHzRef := 0.0;
+END_IF;
+
+// SRAMP function to build velocity command
+fbSRAMP(
+    X           := DriveHzRef,
+    A_UP        := rAccRate,
+    A_DN        := rDecRate,
+    VU_MAX      := rAccRate *1000,     // Jerk
+    VD_MAX      := rDecRate *1000,     // Jerk
+    LIMIT_HIGH  := HzMax,
+    LIMIT_LOW   := -HzMax,
+    RST         := bStop ,
+    Y           => rDriveVelProfile,
+    V           => rDriveACCProfile // Acctual Acc
+);
+rRPMvel:= rDriveVelProfile/HzMax * iMotorMaxSpeed;
+rLinearVel := rDriveVelProfile/HzMax * ConveyorVelocityMax;
+
+
+//Status 
+bSpeedReached := (rDriveVelProfile = DriveHzRef AND DriveRun);
+bRunning      := (DriveHzRef > 0 AND DriveRun);
+
+//Drive Status (priority-based)
+IF bStop THEN
+    // SRAMP reset → forced stop
+    sStatus := 'STOP';
+
+ELSIF (DriveRunFWR AND DriveRunREV) THEN
+    // Illegal command combination
+    sStatus := 'Command Conflict: Run Farward and Reverse';
+
+ELSIF NOT DriveRun THEN
+    // No valid run command (XOR result = FALSE)
+    sStatus := 'Stopped (No specific direction Run Command)';
+
+ELSE
+    // DriveRun = TRUE (exactly one direction active)
+
+    IF bRunFWR OR bJog THEN
+        sStatus := 'Running Farward';
+
+    ELSIF bRunREV THEN
+        sStatus := 'Running Reverse';
+
+    END_IF
+END_IF;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.17">
+  <POU Name="FB_InputConvBufferManagement" Id="{6c1836fc-e952-4af1-b1f3-94187a6d5886}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InputConvBufferManagement
+VAR_INPUT
+ 	
+	bEnable	:BOOL;
+    bInSensor	:BOOL; // Photo sensors
+    bOutSensor	:BOOL; // Photo sensors
+	bReadytoRecieve	:BOOL; //Ready to recieve from Robot
+	// iCapacity	:INT; // For real system 
+	
+	// Geometry 
+    rConvLength	:REAL;	// usable buffer length for simulation (meters)
+    rBoxLen		:REAL;	// box length along travel for simulation (meters)
+    rMinGap		:REAL;	// minimum clear gap between boxes for simulation (meters)
+	
+	bInfeedReady :BOOL:= TRUE; // Infeed Handshake
+    bRobotReady	:BOOL:= TRUE; // Robot Handshake
+
+END_VAR
+
+VAR CONSTANT
+    iMax_Boxes_buffer	:INT := 500; //  Expected max capacity FIFO storage size
+END_VAR
+
+VAR_OUTPUT
+    bFull		:BOOL;			// Buffer Empty
+    bEmpty		:BOOL;			// Buffer Empty
+    bAllowIn	:BOOL;			//Allow infeeder 
+    bAllowOut	:BOOL;			//Allow Robot Pick
+	
+END_VAR
+
+VAR
+	bEnableBuffer :BOOL;
+		
+    rtIn		:R_TRIG;	// Rising edge detector for bInSensor
+    rtOut		:R_TRIG;	// Rising edge detector for bOutSensor
+	ftOutOff	:F_TRIG;	// falling edge detector for bOutSensor
+	
+	bReset		:BOOL := FALSE; // Reset count on rising edge
+    rtReset		:R_TRIG;	// Ralling edge reset
+	
+	iCount       :INT;     // current box count
+    bInEdge      :BOOL;    // IN rising edge
+    bOutEdge     :BOOL;    // OUT rising edge
+	
+	// Time
+    fbTime	:FB_LocalSystemTime := (bEnable := TRUE, dwCycle := 1);
+    sNow	:STRING;
+	
+	//stData : ST_Data;
+	Inputlog     : ARRAY[1..iMax_Boxes_buffer] OF ST_InputConvData;
+	
+	// FIFO storage
+    iHead	:INT := 1;
+    iTail	:INT := 1;
+    iQCount	:INT := 0;
+	
+	// ID generator
+    iIdCounter : INT := 0;
+	
+	// Effective capacity
+    iEffCap  : INT;
+	
+	iCapacity	:INT;
+	// Capacity intermediates
+    rPitch_m	:REAL;
+    rCap		:REAL;
+    iCapTmp		:INT;
+	
+	i :INT;
+	sStatus		:STRING(120);	// STATUS text
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Capacity calculation -  For simulation
+// IF (rBoxLen <= 0.0) OR (rMinGap <= 0.0) OR (rConvLength <= 0.0) THEN
+//     iCapTmp := 0;
+// ELSE
+//     rPitch_m := rBoxLen + rMinGap;
+// 
+//     IF rPitch_m <= 0.0 THEN
+//         iCapTmp := 0;
+//     ELSE
+//         rCap := (rConvLength + rMinGap) / rPitch_m;
+// 
+//         // Round down
+//         iCapTmp := REAL_TO_INT(FLOOR(rCap));
+// 
+//         IF iCapTmp < 0 THEN
+// 			iCapTmp := 0; 
+// 		END_IF
+//     END_IF
+// END_IF
+// 
+// iCapacity := iCapTmp;
+
+// Clamp to FIFO storage
+iEffCap := iCapacity;
+
+IF iEffCap < 0 THEN
+	iEffCap := 0;
+END_IF
+
+//Timestamps
+fbTime();
+IF fbTime.bValid THEN
+    sNow := SYSTEMTIME_TO_STRING(fbTime.systemTime);
+ELSE
+    sNow := '';
+END_IF
+
+// Edge detection
+rtIn(CLK := bInSensor);
+rtOut(CLK := bOutSensor);
+rtReset(CLK := bReset);
+ftOutOff(CLK := bOutSensor);
+
+bInEdge  := rtIn.Q;
+bOutEdge := rtOut.Q;
+
+//Reset
+IF rtReset.Q THEN
+	
+    iHead := 1;
+    iTail := 1;
+    iQCount := 0;
+	
+    FOR i := 1 TO iMax_Boxes_buffer DO
+        Inputlog[i].id := 0;
+        Inputlog[i].timeStampIn := '';
+        Inputlog[i].timeStampArrived := '';
+        Inputlog[i].timeStampOut := '';
+    END_FOR
+
+END_IF
+	
+//FIFO tracking
+IF bEnable AND bEnableBuffer AND fbTime.bValid THEN
+
+    // 1) IN rising edge > Push (if not full)
+    IF bInEdge THEN
+        IF iQCount < iEffCap THEN
+
+            // ID wrap protection
+            IF iIdCounter >= 32767 THEN
+				iIdCounter := 0; 
+			END_IF
+            iIdCounter := iIdCounter + 1;
+
+            Inputlog[iTail].id := iIdCounter;
+            Inputlog[iTail].timeStampIn := sNow;
+            Inputlog[iTail].timeStampArrived := '';
+            Inputlog[iTail].timeStampOut := '';
+
+            // advance tail
+            iTail := iTail + 1;
+            IF iTail > iMax_Boxes_buffer THEN
+				iTail := 1;
+			END_IF
+
+            iQCount := iQCount + 1;
+        END_IF
+    END_IF
+
+
+    // 2) OUT rising edge > stamp ARRIVED on oldest (HEAD)
+    IF bOutEdge THEN
+        IF iQCount > 0 THEN
+            Inputlog[iHead].timeStampArrived := sNow;
+        END_IF
+    END_IF
+
+
+    // 3) OUT falling edge -> stamp OUT on oldest and POP
+    IF ftOutOff.Q THEN
+        IF iQCount > 0 THEN
+            Inputlog[iHead].timeStampOut := sNow;
+
+            // pop
+            iHead := iHead + 1;
+            IF iHead > iMax_Boxes_buffer THEN
+				iHead := 1;
+			END_IF
+
+            iQCount := iQCount - 1;
+        END_IF
+    END_IF
+
+END_IF
+
+
+iCount := iQCount; //Number of boxes on conveyor
+bEmpty := (iCount <= 0);
+bFull  := (iEffCap > 0) AND (iCount >= iEffCap);
+
+// Send infeeder allow signal
+bAllowIn  := bEnable AND NOT bFull AND NOT bInSensor AND bInfeedReady AND bReadytoRecieve;
+
+// Outfeed release allowed if buffer has boxes AND robot is ready AND out sensor is blocked
+bAllowOut := bEnable AND NOT bEmpty AND bOutSensor AND bRobotReady;
+
+// Status (priority-based)
+IF NOT bEnable THEN
+    sStatus := 'Input-Conveyor Buffer - Disabled';
+
+	// Hard limit states
+	ELSIF bFull THEN
+		sStatus := 'Conveyor is Full: STOP';
+	ELSIF bEmpty THEN
+		sStatus := 'Conveyor is Empty';
+
+	// Infeed path (not full, not empty)
+	ELSIF NOT bAllowIn THEN
+		// Give the most relevant reason
+		IF bInSensor THEN
+			sStatus := 'Infeed blocked: entry sensor occupied';
+		ELSIF NOT bInfeedReady THEN
+			sStatus := 'Infeed blocked: infeeder not ready';
+		ELSIF NOT bReadytoRecieve THEN
+			sStatus := 'Infeed blocked: buffer not ready to receive';
+		ELSE
+			sStatus := 'Infeed blocked';
+		END_IF
+
+	// Outfeed path
+	ELSIF NOT bAllowOut THEN
+		IF NOT bOutSensor THEN
+			sStatus := 'Outfeed waiting: no box at out sensor';
+		ELSIF NOT bRobotReady THEN
+			sStatus := 'Outfeed waiting: robot not ready';
+		ELSE
+			sStatus := 'Outfeed blocked';
+		END_IF
+ELSE
+    sStatus := 'Running: Infeed/Outfeed allowed';
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
