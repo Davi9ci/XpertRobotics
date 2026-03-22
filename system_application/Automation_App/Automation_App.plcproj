@@ -9,7 +9,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>Automation_App</Name>
-    <ProgramVersion>3.1.4026.20</ProgramVersion>
+    <ProgramVersion>3.1.4026.21</ProgramVersion>
     <Application>{3d5d0412-460b-4b8c-a1c5-fc12c34654b7}</Application>
     <TypeSystem>{5af9466f-deea-434a-baf0-4a6607ee0bcf}</TypeSystem>
     <Implicit_Task_Info>{35c0ed0f-82f6-4dd4-ab2c-a380c282f797}</Implicit_Task_Info>
