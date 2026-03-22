@@ -46,6 +46,7 @@ LineIDs.dbg.bak
 # To include a specific library directory (i.e. third party/custom libs), 
 # use pattern `!/**/_Libraries/<directory name>/` i.e. `!/**/_Libraries/www.tcunit.org/`
 # 
+!**/_Libraries/oscat/
 
 # VS Shell project specific files and folders
 **/.vs/
