@@ -6,8 +6,8 @@ VAR_INPUT
 	bEnable			:BOOL; //PLC Logic Enable
 	bInFeedtoConv 	:BOOL; //Outside signal from infeed system to conveyor - ready to recieve
 	bRobotReadytoPick 	:BOOL; //Outside signal from robot - ready to recieve
-	rCyclePLC			:REAL;
-	bSimulation :BOOL;
+	rCyclePLC			:REAL; // PLC task cycle time in seconds
+	bSimulation :BOOL; // TRUE = VFD simulation active (no real drive)
 	
 END_VAR
 VAR_OUTPUT
@@ -20,14 +20,14 @@ VAR
 	InputConvVFD			:FB_InputConvVFD;
 	InputConvBufferManger	:FB_InputConvBufferManagement;
 
-	iMotorMaxSpeed			:INT;
-	iConveyorVelocitycmd	:REAL;
-	rAccTime				:REAL;
-	rDecTime				:REAL;
-	
+	iMotorMaxSpeed			:INT; // Motor rated speed at 50 Hz [RPM]
+	iConveyorVelocitycmd	:REAL; // Commanded belt velocity [m/s]
+	rAccTime				:REAL; // Drive acceleration time [s]
+	rDecTime				:REAL; // Drive deceleration time [s]
+
 	//Belt linear vel tranformation
-	iGearboxReduction	:INT := 1;
-	rPullyDiameter		:REAL;
+	iGearboxReduction	:INT := 1; // Gearbox reduction ratio (motor to pulley shaft)
+	rPullyDiameter		:REAL; // Drive pulley diameter [m]
 	
 	//Conveyor propeties 
 	rConvLength :REAL; //Conveyor Length in m (Distance between sensors)

@@ -3,12 +3,12 @@
   <POU Name="FB_InputConvProperties" Id="{3ab6a108-a326-4b13-a0bc-9fd119014e86}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_InputConvProperties
 VAR_INPUT 
-	bEnable				:BOOL;
-	GearboxReduction 	:INT;
+	bEnable				:BOOL; // PLC Logic Enable
+	GearboxReduction 	:INT; // Gearbox reduction ratio (motor to pulley shaft)
 	PullyDiameter		:REAL; //m
 	ConveyorVelocitycmd	:REAL; //m/s
 	MotorMaxSpeed		:INT; //RPM at 50 Hz (ASSUMPTION)
-	bBufferFull			:BOOL; 
+	bBufferFull			:BOOL; // Forces motor speed to zero when the conveyor buffer is full
 	
 END_VAR
 
@@ -21,10 +21,10 @@ VAR_OUTPUT
 END_VAR
 
 VAR
-	HzMax 	:REAL :=50;
-    HzCmd	:REAL;
-    Vin		:REAL;
-    RawAnalog	:REAL;
+	HzMax 	:REAL :=50; // Maximum drive frequency [Hz]
+    HzCmd	:REAL; // Calculated frequency command [Hz]
+    Vin		:REAL; // Calculated analog output voltage [V]
+    RawAnalog	:REAL; // Intermediate raw analog value before INT conversion
 END_VAR
 ]]></Declaration>
     <Implementation>

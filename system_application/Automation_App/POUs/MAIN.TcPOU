@@ -3,14 +3,14 @@
   <POU Name="MAIN" Id="{f910a8bf-e98b-47fb-807f-8f341c5bf839}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-    InputConveyor	:FB_InputConvMAIN;
-	RobotInterface	:FB_RobotInterefaceMAIN;
-	OutputConveyor	:FB_OutputConvMAIN;
-	
+    InputConveyor	:FB_InputConvMAIN;      // Input conveyor subsystem controller
+	RobotInterface	:FB_RobotInterefaceMAIN; // Robot pick/place coordination
+	OutputConveyor	:FB_OutputConvMAIN;     // Output conveyor subsystem controller
+
     bEnable		:BOOL; //PLC Logic Enable
-	bInFeedtoConv :BOOL:= TRUE;
-	rCyclePLC	:REAL:= 0.001;
-	bSimulation :BOOL;
+	bInFeedtoConv :BOOL:= TRUE; // Allow external infeed system to feed boxes onto input conveyor
+	rCyclePLC	:REAL:= 0.001; // PLC task cycle time in seconds (1 ms default)
+	bSimulation :BOOL; // TRUE = run in simulation mode (no real hardware required)
 	
 END_VAR
 ]]></Declaration>

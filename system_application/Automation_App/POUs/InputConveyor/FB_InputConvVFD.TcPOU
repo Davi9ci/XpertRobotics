@@ -5,40 +5,40 @@
 FUNCTION_BLOCK FB_InputConvVFD
 
 VAR_INPUT
-	bStop				:BOOL;
-    bRunFWR				:BOOL;
-	bRunREV				:BOOL;
-	bJog		:BOOL;
-	iVoltage		:REAL; 
-	iVoltageMax		:REAL; 
+	bStop				:BOOL; // Stop command - resets SRAMP and forces velocity to zero
+    bRunFWR				:BOOL; // Run forward command
+	bRunREV				:BOOL; // Run reverse command
+	bJog		:BOOL; // Jog command (treated the same as forward run)
+	iVoltage		:REAL; // Analog speed reference voltage [V]
+	iVoltageMax		:REAL; // Maximum analog reference voltage [V] (typically 10 V)
     rAccTime		:REAL;      // Acc in seconds
     rDecTime		:REAL;      // DEC in seconds
-	iMotorMaxSpeed	:REAL;
-	ConveyorVelocityMax :REAL;
+	iMotorMaxSpeed	:REAL; // Motor rated speed at 50 Hz [RPM]
+	ConveyorVelocityMax :REAL; // Maximum conveyor belt velocity at motor max speed [m/s]
 	
 END_VAR
 
 VAR_OUTPUT
-	bSpeedReached	:BOOL;	
-	bFault			:BOOL;
-	bRunning		:BOOL;
+	bSpeedReached	:BOOL; // TRUE when drive output frequency matches the reference
+	bFault			:BOOL; // Drive fault flag (not implemented in simulation)
+	bRunning		:BOOL; // TRUE when drive is running with a positive frequency reference
 	rDriveVelProfile	:REAL;   // Simulated Motor vel profile
-	rDriveACCProfile	:REAL; // Simulated Motor acc profile 
+	rDriveACCProfile	:REAL; // Simulated Motor acc profile
 	
 END_VAR
 
 VAR
-	DriveRun		:BOOL;
-    DriveRunFWR		:BOOL;
-    DriveRunREV		:BOOL;
-    DriveHzRef		:REAL;
-	rAccRate		:REAL;
-    rDecRate		:REAL;
-	rDirSign 		:REAL;
-	fbSRAMP :SRAMP;
-	HzMax :REAL := 50;
-	rRPMvel :REAL;
-	rLinearVel :REAL;
+	DriveRun		:BOOL; // TRUE when exactly one direction command is active (XOR result)
+    DriveRunFWR		:BOOL; // Internal forward run (RunFWR OR Jog)
+    DriveRunREV		:BOOL; // Internal reverse run
+    DriveHzRef		:REAL; // Target frequency reference [Hz], ±HzMax
+	rAccRate		:REAL; // Acceleration rate [Hz/s]
+    rDecRate		:REAL; // Deceleration rate [Hz/s] (negative value)
+	rDirSign 		:REAL; // Direction sign: +1.0 forward, -1.0 reverse
+	fbSRAMP :SRAMP; // OSCAT S-ramp function block for smooth velocity profiling
+	HzMax :REAL := 50; // Maximum drive frequency [Hz]
+	rRPMvel :REAL; // Simulated motor shaft speed [RPM]
+	rLinearVel :REAL; // Simulated conveyor belt linear velocity [m/s]
 	sStatus		:STRING(120);	// STATUS text
 
 END_VAR]]></Declaration>

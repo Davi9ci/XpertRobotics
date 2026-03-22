@@ -4,9 +4,9 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_OutputConvMAIN
 VAR_INPUT
 	bEnable				:BOOL; //PLC Logic Enable
-	bRobotReadytoPlace 	:BOOL;
-	rCyclePLC			:REAL;
-	bSimulation			:BOOL;
+	bRobotReadytoPlace 	:BOOL; // Outside signal from robot: ready to place a box
+	rCyclePLC			:REAL; // PLC task cycle time in seconds
+	bSimulation			:BOOL; // TRUE = VFD simulation active (no real drive)
 	
 END_VAR
 VAR_OUTPUT
@@ -19,14 +19,14 @@ VAR
 	OutputConvBufferManger	:FB_OutputConvBufferManagement;
 //	HMIStates				:FB_HMIStates;
 	
-	iMotorMaxSpeed			:INT;
-	iConveyorVelocitycmd	:REAL;
-	rAccTime				:REAL;
-	rDecTime				:REAL;
-	
+	iMotorMaxSpeed			:INT; // Motor rated speed at 50 Hz [RPM]
+	iConveyorVelocitycmd	:REAL; // Commanded belt velocity [m/s]
+	rAccTime				:REAL; // Drive acceleration time [s]
+	rDecTime				:REAL; // Drive deceleration time [s]
+
 	//Belt linear vel tranformation
-	iGearboxReduction	:INT := 1;
-	rPullyDiameter		:REAL;
+	iGearboxReduction	:INT := 1; // Gearbox reduction ratio (motor to pulley shaft)
+	rPullyDiameter		:REAL; // Drive pulley diameter [m]
 	
 END_VAR]]></Declaration>
     <Implementation>

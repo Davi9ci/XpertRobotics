@@ -3,8 +3,8 @@
   <POU Name="FB_InputConvBufferManagement" Id="{6c1836fc-e952-4af1-b1f3-94187a6d5886}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_InputConvBufferManagement
 VAR_INPUT
- 	
-	bEnable	:BOOL;
+
+	bEnable	:BOOL; // PLC Logic Enable
     bInSensor	:BOOL; // Photo sensors
     bOutSensor	:BOOL; // Photo sensors
 	bReadytoRecieve	:BOOL; //Ready to recieve from Robot
@@ -25,15 +25,15 @@ VAR CONSTANT
 END_VAR
 
 VAR_OUTPUT
-    bFull		:BOOL;			// Buffer Empty
-    bEmpty		:BOOL;			// Buffer Empty
+    bFull		:BOOL;			// Buffer is full (box count >= effective capacity)
+    bEmpty		:BOOL;			// Buffer is empty (no boxes on conveyor)
     bAllowIn	:BOOL;			//Allow infeeder 
     bAllowOut	:BOOL;			//Allow Robot Pick
 	
 END_VAR
 
 VAR
-	bEnableBuffer :BOOL;
+	bEnableBuffer :BOOL; // Enables FIFO tracking (must be TRUE for box counting to run)
 		
     rtIn		:R_TRIG;	// Rising edge detector for bInSensor
     rtOut		:R_TRIG;	// Rising edge detector for bOutSensor
@@ -47,30 +47,30 @@ VAR
     bOutEdge     :BOOL;    // OUT rising edge
 	
 	// Time
-    fbTime	:FB_LocalSystemTime := (bEnable := TRUE, dwCycle := 1);
-    sNow	:STRING;
+    fbTime	:FB_LocalSystemTime := (bEnable := TRUE, dwCycle := 1); // Local system time FB for box timestamping
+    sNow	:STRING; // Current timestamp as formatted string
 	
 	//stData : ST_Data;
-	Inputlog     : ARRAY[1..iMax_Boxes_buffer] OF ST_InputConvData;
+	Inputlog     : ARRAY[1..iMax_Boxes_buffer] OF ST_InputConvData; // FIFO array storing box tracking records
 	
 	// FIFO storage
-    iHead	:INT := 1;
-    iTail	:INT := 1;
-    iQCount	:INT := 0;
-	
+    iHead	:INT := 1; // Index of the oldest box (next to dequeue)
+    iTail	:INT := 1; // Index of the next empty slot (where next box is enqueued)
+    iQCount	:INT := 0; // Current number of boxes in the FIFO
+
 	// ID generator
-    iIdCounter : INT := 0;
-	
+    iIdCounter : INT := 0; // Auto-incrementing box ID counter (wraps at 32767)
+
 	// Effective capacity
-    iEffCap  : INT;
-	
-	iCapacity	:INT;
+    iEffCap  : INT; // Effective buffer capacity after clamping (>= 0)
+
+	iCapacity	:INT; // Configured maximum number of boxes on conveyor
 	// Capacity intermediates
-    rPitch_m	:REAL;
-    rCap		:REAL;
-    iCapTmp		:INT;
-	
-	i :INT;
+    rPitch_m	:REAL; // Box pitch = box length + minimum gap [m]
+    rCap		:REAL; // Float capacity before floor truncation
+    iCapTmp		:INT; // Intermediate capacity before final clamping
+
+	i :INT; // Loop index used during FIFO reset
 	sStatus		:STRING(120);	// STATUS text
 END_VAR]]></Declaration>
     <Implementation>

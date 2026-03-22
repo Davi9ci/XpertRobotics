@@ -3,10 +3,10 @@
   <DUT Name="ST_InputConvData" Id="{379253df-0555-410e-8cde-272d7d813f36}">
     <Declaration><![CDATA[TYPE ST_InputConvData :
 STRUCT
-	id :INT;
-	timeStampin :STRING;
-	timeStamparrived:STRING;
-	timeStampout:STRING;
+	id :INT; // Unique box identifier assigned on entry
+	timeStampin :STRING; // Timestamp when box passed the entry (IN) sensor
+	timeStamparrived:STRING; // Timestamp when box reached the exit (OUT) sensor
+	timeStampout:STRING; // Timestamp when box cleared the exit (OUT) sensor
 END_STRUCT
 END_TYPE
 ]]></Declaration>

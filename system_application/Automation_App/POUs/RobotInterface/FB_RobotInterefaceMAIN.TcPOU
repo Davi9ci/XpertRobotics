@@ -3,15 +3,15 @@
   <POU Name="FB_RobotInterefaceMAIN" Id="{57ef01b0-8444-4a14-b048-721777179cc2}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_RobotInterefaceMAIN
 VAR_INPUT
-	bEnable :BOOL;
-	bInputConvReady :BOOL;
-	bOutputConvReady :BOOL;
+	bEnable :BOOL; // PLC Logic Enable
+	bInputConvReady :BOOL; // Signal from input conveyor: box is ready at robot pickup position
+	bOutputConvReady :BOOL; // Signal from output conveyor: drop zone is clear
 	
 END_VAR
 
 VAR_OUTPUT
-	bRobotReadyPickInputConv :BOOL;
-	bRobotReadyPlaceOutputConv :BOOL;
+	bRobotReadyPickInputConv :BOOL; // Permission to robot: OK to pick from input conveyor
+	bRobotReadyPlaceOutputConv :BOOL; // Permission to robot: OK to place on output conveyor
 	
 END_VAR
 VAR

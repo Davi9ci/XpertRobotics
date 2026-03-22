@@ -3,9 +3,9 @@
   <DUT Name="ST_OutputConvData" Id="{50cf2d9e-41c5-4bcf-ad34-f66d8ea3283e}">
     <Declaration><![CDATA[TYPE ST_OutputConvData :
 STRUCT
-	id :INT;
-	timeStampin :STRING;
-	timeStampout:STRING;
+	id :INT; // Unique box identifier assigned when robot places the box
+	timeStampin :STRING; // Timestamp when box entered the drop zone (IN sensor rising edge)
+	timeStampout:STRING; // Timestamp when box left the conveyor (OUT sensor falling edge)
 END_STRUCT
 END_TYPE
 ]]></Declaration>

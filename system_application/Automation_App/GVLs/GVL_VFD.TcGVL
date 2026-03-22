@@ -6,35 +6,35 @@ VAR_GLOBAL
 	
 // INPUT Conveyor----------------------
 // Outputs from PLC to input conveyor VFD
-	bInConvStop			AT%Q*:BOOL;
-    bInConvRunFWD		AT%Q*:BOOL;
-	bInConvRunREV		AT%Q*:BOOL;
-	bInConvJog			AT%Q*:BOOL;
+	bInConvStop			AT%Q*:BOOL; // Stop command to input conveyor VFD
+    bInConvRunFWD		AT%Q*:BOOL; // Run forward command to input conveyor VFD
+	bInConvRunREV		AT%Q*:BOOL; // Run reverse command to input conveyor VFD
+	bInConvJog			AT%Q*:BOOL; // Jog command to input conveyor VFD
 
 // Inputs from input conveyor VFD to PLC
-	bInputVFDSpeedReached	AT%I*:BOOL;	
-	bInConvFault			AT%I*:BOOL;
-	bInputVFDRunning		AT%I*:BOOL;
+	bInputVFDSpeedReached	AT%I*:BOOL; // Speed-reached status from input conveyor VFD
+	bInConvFault			AT%I*:BOOL; // Fault status from input conveyor VFD
+	bInputVFDRunning		AT%I*:BOOL; // Running status from input conveyor VFD
 	
 // Inputs form Conveyor Sensors
-	bInputConveyorINSensor	AT%I*:BOOL;
-	bInputConveyorOUTSensor AT%I*:BOOL;
+	bInputConveyorINSensor	AT%I*:BOOL; // Entry photo sensor on input conveyor (box arriving)
+	bInputConveyorOUTSensor AT%I*:BOOL; // Exit photo sensor on input conveyor (box at robot pickup position)
 
 // OUTPUT CONVEYOR-----------------------
 // Outputs from PLC to input conveyor VFD
-	bOutConvStop		AT%Q*:BOOL;
-    bOutConvRunFWD		AT%Q*:BOOL;
-	bOutConvRunREV		AT%Q*:BOOL;
-	bOutConvJog			AT%Q*:BOOL;
+	bOutConvStop		AT%Q*:BOOL; // Stop command to output conveyor VFD
+    bOutConvRunFWD		AT%Q*:BOOL; // Run forward command to output conveyor VFD
+	bOutConvRunREV		AT%Q*:BOOL; // Run reverse command to output conveyor VFD
+	bOutConvJog			AT%Q*:BOOL; // Jog command to output conveyor VFD
 
 // Inputs from input conveyor VFD to PLC
-	bOutputVFDSpeedReached	AT%I*:BOOL;	
-	bOutConvFault			AT%I*:BOOL;
-	bOutputVFDRunning		AT%I*:BOOL;
+	bOutputVFDSpeedReached	AT%I*:BOOL; // Speed-reached status from output conveyor VFD
+	bOutConvFault			AT%I*:BOOL; // Fault status from output conveyor VFD
+	bOutputVFDRunning		AT%I*:BOOL; // Running status from output conveyor VFD
 	
 // Inputs form Conveyor Sensors
-	bOutputConveyorINSensor		AT%I*:BOOL;
-	bOutputConveyorOUTSensor	AT%I*:BOOL;
+	bOutputConveyorINSensor		AT%I*:BOOL; // Entry photo sensor on output conveyor (robot drop zone)
+	bOutputConveyorOUTSensor	AT%I*:BOOL; // Exit photo sensor on output conveyor (box leaving system)
 END_VAR
 ]]></Declaration>
   </GVL>
