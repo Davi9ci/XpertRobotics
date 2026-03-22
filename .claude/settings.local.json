@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__twincat-validator__validate_batch",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(find 'C:\\\\Users\\\\YonatanA\\\\Documents\\\\Yonatan\\\\Technical\\\\TwinCAT projects\\\\4026\\\\XpertRobotics\\\\system_application' -type f \\\\\\(-name *.TcPOU -o -name *.TcDUT -o -name *.TcGVL -o -name *.TcIO \\\\\\))",
+      "Bash(find 'C:\\\\Users\\\\YonatanA\\\\Documents\\\\Yonatan\\\\Technical\\\\TwinCAT projects\\\\4026\\\\XpertRobotics\\\\XpertRobotics' -type f \\\\\\(-name *.view -o -name *.function.json -o -name *.js \\\\\\))"
     ]
   }
 }

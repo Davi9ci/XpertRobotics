@@ -38,13 +38,13 @@ LineIDs.dbg.bak
 # exclude not required folders
 **/_Boot/
 **/_CompileInfo/
-
 **/_ModuleInstall/
 **/_Deployment/
 **/_Repository/
 
 # Claude
-**.claude
+**/.claude/
+CLAUDE.md
 
 # To include a specific library directory (i.e. third party/custom libs), 
 # use pattern `!/**/_Libraries/<directory name>/` i.e. `!/**/_Libraries/www.tcunit.org/`
